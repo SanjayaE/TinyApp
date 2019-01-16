@@ -16,6 +16,15 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+var generateRandomString = function() {
+    return Math.random().toString(36).split('').filter( function(value, index, self) {
+        return self.indexOf(value) === index;
+    }).join('').substr(2,6);
+  //The javascript function ".toString()" does accept a parameter range from 2 to 36. Numbers from 2 to 10 represent: 0-9 values and 11 to 36 represent alphabets.
+
+}
+
+
 // app.get("/hello", (req, res) => {
 //   res.send("<html><body>Hello <b>World</b></body></html>\n");
 
@@ -49,9 +58,13 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   console.log(req.body.longURL);  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  //this result is the work of the bodyParser.urlEncoded() middleware
 });
 
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
+//console.log(generateRandomString());
