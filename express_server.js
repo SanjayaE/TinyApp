@@ -38,11 +38,18 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+//The order of route definitions matters! (added this before app.get("/urls/:id", ...) route definition.)
+
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id , urls: urlDatabase };
   res.render("urls_show", templateVars);
 });
 
+//We need to define the route that will match this POST request and handle it.
+app.post("/urls", (req, res) => {
+  console.log(req.body.longURL);  // debug statement to see POST parameters
+  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+});
 
 
 app.listen(PORT, () => {
