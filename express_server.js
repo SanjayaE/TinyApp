@@ -57,14 +57,15 @@ app.get("/urls/:id", (req, res) => {
 //We need to define the route that will match this POST request and handle it.
 app.post("/urls", (req, res) => {
   console.log(req.body.longURL);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  //res.send("Ok");         // Respond with 'Ok' (we will replace this)
   //this result is the work of the bodyParser.urlEncoded() middleware
   urlDatabase[generateRandomString()] = req.body.longURL;
   console.log(urlDatabase);
+  res.send("Ok");
 });
 
 // app.get("/u/:shortURL", (req, res) => {
-//   // let longURL = ...
+//   let longURL = urlDatabase.shortURL;
 //   res.redirect(longURL);
 // });
 
