@@ -5,6 +5,7 @@ var express = require("express");
 var app = express();
 var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
+var ranNum;
 //The body-parser library will allow us to access POST request parameters, such as req.body.longURL, which we will store in a variable called urlDatabase.
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -59,15 +60,21 @@ app.post("/urls", (req, res) => {
   console.log(req.body.longURL);  // debug statement to see POST parameters
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
   //this result is the work of the bodyParser.urlEncoded() middleware
-  urlDatabase[generateRandomString()] = req.body.longURL;
-  console.log(urlDatabase);
-  res.send("Ok");
+  ranNum = generateRandomString();
+  urlDatabase[ranNum] = req.body.longURL;
+  //console.log(urlDatabase);
+  //res.send(302); //Temporary moved
+  res.redirect(302,"/u/" + ranNum);
 });
 
-// app.get("/u/:shortURL", (req, res) => {
-//   let longURL = urlDatabase.shortURL;
-//   res.redirect(longURL);
-// });
+
+app.get("/u/:shortURL", (req, res) => {
+  let short =  req.params.shortURL ;
+  let longURL =  urlDatabase[short] ;
+ // console.log('longurl : ',longURL);
+  res.redirect(longURL);
+  // console.log(longURL);
+});
 
 
 app.listen(PORT, () => {
