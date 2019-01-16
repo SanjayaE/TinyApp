@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<header>
+    <% include ../views/partials/_header %>
+</header>
+<body>
+    <!-- Add your EJS code here -->
+    <h2>The long URL and its shortened form</h2>
+     <ul>
+      <!-- looping through objects. there is no Object.forEach() method.
+
+To achieve something similar, we can use the Object.keys() method, which returns an array of the keys in an object. Then we run that through an Array.forEach() method. -->
+
+
+       <% Object.keys(urls).forEach(function(item) { %>
+        <li><%= urls[item] %> - <%= shortURL %></li>
+    <% }); %>
+
+
+
+
+     </ul>
+
+
+</body>
+</html>
