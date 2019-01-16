@@ -59,7 +59,14 @@ app.post("/urls", (req, res) => {
   console.log(req.body.longURL);  // debug statement to see POST parameters
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
   //this result is the work of the bodyParser.urlEncoded() middleware
+  urlDatabase[generateRandomString()] = req.body.longURL;
+  console.log(urlDatabase);
 });
+
+// app.get("/u/:shortURL", (req, res) => {
+//   // let longURL = ...
+//   res.redirect(longURL);
+// });
 
 
 app.listen(PORT, () => {
