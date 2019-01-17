@@ -16,11 +16,26 @@ app.use(cookieParser());
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
-//Database
-var urlDatabase = {
+//URL Database
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+// User Database
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
 
 // function to generate a random number
 var generateRandomString = function() {
@@ -47,10 +62,6 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id , urls: urlDatabase ,username: req.cookies["username"]};
   res.render("urls_show", templateVars);
 });
-
-
-
-
 
 
 //We need to define the route that will match this POST request and handle it.
@@ -109,6 +120,27 @@ res.clearCookie('username');
 res.redirect(302,"/urls/");
 
 });
+
+
+app.get("/register", (req, res) => {
+  let templateVars = { urls: urlDatabase , username: req.cookies["username"] };
+  res.render("register", templateVars);
+});
+
+//Registration Handler
+app.post("/register", (req, res) => {
+let userID = generateRandomString();
+let email = req.body.email;
+let password = req.body.password;
+// res.cookie('username', userID);
+res.cookie('user_id', userID);
+users[userID] = {id: userID, email: email, password: password}
+
+console.log(users);
+
+res.redirect(302,"/urls/");
+});
+
 
 
 app.listen(PORT, () => {
