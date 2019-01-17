@@ -19,7 +19,7 @@ To achieve something similar, we can use the Object.keys() method, which returns
         <li><a href="<%= urls[item] %>"><%= urls[item] %></a> ==> <%= href= item %> <a href= <%= "urls/"+ item%>>Edit</a></li>
 
         <form method="POST" action= <%=  "/urls/" + item + "/delete"%>>
-          <input type="submit" name="" value="delete"/>
+          <input type="submit" name="" value="Delete"/>
         </form>
 
     <% }); %>
