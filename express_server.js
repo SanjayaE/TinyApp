@@ -80,11 +80,10 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect(302,"/urls");
 });
 
-
+ //editing one url and add new long urlS
 app.post("/urls/:id", (req, res) => {
 //console.log("KKKJKHGFGHJJGHJ");
 var ed = req.params.id
-  //editing one url and add new long url
 urlDatabase[ed] =  req.body.updatedlongURL;
 console.log(urlDatabase);
  res.redirect(302,"/urls/"+ed);
@@ -92,6 +91,7 @@ console.log(urlDatabase);
 
 });
 
+//assigning long URL to the key (short url)
 
 app.get("/u/:shortURL", (req, res) => {
   let short =  req.params.shortURL ;
@@ -99,6 +99,19 @@ app.get("/u/:shortURL", (req, res) => {
  // console.log('longurl : ',longURL);
   res.redirect(longURL);
   // console.log(longURL);
+});
+
+
+//User login function
+
+app.post("/login", (req, res) => {
+//console.log("login working");
+var un =req.body.username;
+res.cookie('username', un);
+console.log(un);
+ res.redirect(302,"/urls/");
+
+
 });
 
 
