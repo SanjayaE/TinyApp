@@ -8,21 +8,12 @@
 </header>
 <body>
     <!-- Add your EJS code here -->
-    <h2>The long URL and its shortened form</h2>
-     <ul>
-      <!-- looping through objects. there is no Object.forEach() method.
-
-To achieve something similar, we can use the Object.keys() method, which returns an array of the keys in an object. Then we run that through an Array.forEach() method. -->
-
-
-       <% Object.keys(urls).forEach(function(item) { %>
-        <li><%= urls[item] %> - <%= item %></li>
-    <% }); %>
-
-
-
-
-     </ul>
+    <h2>Short URL : <%= shortURL%></h2>
+    <form action= <%= "/urls/"+shortURL%> method="POST" style="margin:150px;">
+      <label for="updatedlongURL">Enter a URL:</label>
+      <input id="updatedlongURL" type="text" name="updatedlongURL" placeholder="http://" style="width: 300px">
+      <input type="submit" value="Submit">
+    </form>
 
 
 </body>

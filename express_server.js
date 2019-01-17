@@ -73,11 +73,22 @@ app.post("/urls/:id/delete", (req, res) => {
   //deleting one url
 
   var delurl = req.params.id;
-  console.log("delete : ",delurl)
+  //console.log("delete : ",delurl)
 
   delete urlDatabase[delurl];
   console.log(urlDatabase);
   res.redirect(302,"/urls");
+});
+
+
+app.post("/urls/:id", (req, res) => {
+//console.log("KKKJKHGFGHJJGHJ");
+var ed = req.params.id
+  //editing one url and add new long url
+urlDatabase[ed] =  req.body.updatedlongURL;
+console.log(urlDatabase);
+ res.redirect(302,"/urls/"+ed);
+
 
 });
 
