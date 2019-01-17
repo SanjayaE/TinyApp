@@ -57,14 +57,28 @@ app.get("/urls/:id", (req, res) => {
 
 //We need to define the route that will match this POST request and handle it.
 app.post("/urls", (req, res) => {
-  console.log(req.body.longURL);  // debug statement to see POST parameters
+  //console.log(req.body.longURL);  // debug statement to see POST parameters
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
   //this result is the work of the bodyParser.urlEncoded() middleware
   ranNum = generateRandomString();
   urlDatabase[ranNum] = req.body.longURL;
-  //console.log(urlDatabase);
+  console.log(urlDatabase);
   //res.send(302); //Temporary moved
   res.redirect(302,"/u/" + ranNum);
+});
+
+
+app.post("/urls/:id/delete", (req, res) => {
+
+  //deleting one url
+
+  var delurl = req.params.id;
+  console.log("delete : ",delurl)
+
+  delete urlDatabase[delurl];
+  console.log(urlDatabase);
+  res.redirect(302,"/urls");
+
 });
 
 

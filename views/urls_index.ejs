@@ -16,14 +16,17 @@ To achieve something similar, we can use the Object.keys() method, which returns
 
 
        <% Object.keys(urls).forEach(function(item) { %>
-        <li><%= urls[item] %> - <%= href='#' %></li>
+        <li><%= urls[item] %> - <%= href="/urls/" + item %></li>
+        <form method="POST" action= <%=  "/urls/" + item + "/delete"%>>
+          <input type="submit" name="" value="delete"/>
+        </form>
+
     <% }); %>
 
 
 
 
      </ul>
-
 
 </body>
 </html>
