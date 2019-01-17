@@ -5,13 +5,16 @@ var express = require("express");
 var app = express();
 var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser');
+// const cookiep = require("cookie-parser");
 var ranNum;
 //The body-parser library will allow us to access POST request parameters, such as req.body.longURL, which we will store in a variable called urlDatabase.
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
+
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
-
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -39,7 +42,10 @@ app.get("/hello", (req, res) => {  // basically replacing the code above
 
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+
+  let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  // username: req.cookie["username"]
+
   res.render("urls_index", templateVars);
 });
 
@@ -54,6 +60,11 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id , urls: urlDatabase };
   res.render("urls_show", templateVars);
 });
+
+
+
+
+
 
 //We need to define the route that will match this POST request and handle it.
 app.post("/urls", (req, res) => {
@@ -76,6 +87,7 @@ app.post("/urls/:id/delete", (req, res) => {
   //console.log("delete : ",delurl)
 
   delete urlDatabase[delurl];
+  // delete urlDatabase[delurl];
   console.log(urlDatabase);
   res.redirect(302,"/urls");
 });
@@ -109,10 +121,9 @@ app.post("/login", (req, res) => {
 var un =req.body.username;
 res.cookie('username', un);
 console.log(un);
- res.redirect(302,"/urls/");
-
-
+res.redirect(302,"/urls/");
 });
+
 
 
 app.listen(PORT, () => {
