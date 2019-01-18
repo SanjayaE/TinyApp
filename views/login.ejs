@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<header>
+    <% include ../views/partials/_header %>
+</header>
+<body>
+    <!-- Add your EJS code here -->
+    <% if(user){ %>
+   <h3> Hello <%= user %> </h3>
+   <form method="POST" action= "/logout" >
+          <input type="submit" name="" value="Logout"/>
+        </form>
+
+<% } else { %>
+ <form action="/login" method="POST" style="margin:150px;">
+      <label for="email">Your Email Here:</label>
+      <input id="email" type="email" name="email" placeholder="Type your email here" style="width: 300px">
+
+    <!-- </form>
+     <form action="/register" method="POST" style="margin:150px;"> -->
+      <label for="password">Password Here:</label>
+      <input id="password" type="password" name="password" placeholder="Your password here" style="width: 300px">
+      <input type="submit" value="Submit">
+    </form>
+ <% } %>
+
+
+</body>
+</html>
+
+
+

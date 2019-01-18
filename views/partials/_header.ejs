@@ -16,30 +16,28 @@
         <ul class="nav navbar-nav">
             <a href="/urls">URLS </a>
              <a >   / </a>
+            <a href="/login"> Login</a>
+            <a >   / </a>
+            <a href="/register"> Register</a>
+            <a >   / </a>
             <a href="/urls/new"> Add New URL</a>
 
         </ul>
     </div>
     <h1>My TinyApp</h1>
+  <% if(user_id){ %>
+   <h3> Hello <%= user_id %> </h3>
+   <form method="POST" action= "/logout" >
+          <input type="submit" name="" value="Logout"/>
+        </form>
+<% } %>
+
 
 
 </div>
 </nav>
 
-<!-- writing conditionals in EJS -->
-<% if(username){ %>
-   <h3> Hello <%= username%> </h3>
-   <form method="POST" action= "/logout" >
-          <input type="submit" name="" value="Logout"/>
-        </form>
 
-<% } else { %>
-   <form action="/login" method="POST" style="margin:15px;">
-      <label for="username">Enter your User Name:</label>
-      <input id="username" type="text" name="username" placeholder="your username" style="width: 100px">
-      <input type="submit" value="Submit">
-    </form>
- <% } %>
 
 
 
