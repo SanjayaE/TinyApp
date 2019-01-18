@@ -133,12 +133,26 @@ let userID = generateRandomString();
 let email = req.body.email;
 let password = req.body.password;
 // res.cookie('username', userID);
-res.cookie('user_id', userID);
-users[userID] = {id: userID, email: email, password: password}
 
-console.log(users);
+if (!email || !password){
+  res.redirect(400,"/urls/");
+} else {
+    for (RandomID in users){
+      if (users[RandomID].email === email){
+        //console.log("You already have an account");
+        res.status(400).send('You already have an account')
+        // res.send(400,'You already have an account');
+        // res.redirect(400,"/urls/");
+        break;
+      }
+    }
+  res.cookie('user_id', userID);
+  users[userID] = {id: userID, email: email, password: password}
+  console.log(users);
+  res.redirect(302,"/urls/");
+  return;
+}
 
-res.redirect(302,"/urls/");
 });
 
 
