@@ -6,6 +6,7 @@ var app = express();
 var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 var ranNum;
 var usr ;
 
@@ -172,13 +173,17 @@ res.redirect(302,"/urls/"+ed);
 app.post("/login", (req, res) => {
 var email2 = req.body.email;
 var password2 = req.body.password;
+// bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword);
+
 
 if (!email2 || !password2){
   res.redirect(400,"/urls/");
 } else {
   //console.log(RandomID, users)
    for (let RandomID in users){
-      if (users[RandomID].email === email2 && users[RandomID].password === password2) {
+    // bcrypt.compareSync(password, users[user].password))
+    let true1 = bcrypt.compareSync(password2,users[RandomID].password);
+      if (users[RandomID].email === email2 && true1) {
         //console.log("You already have an account");
           res.cookie('user_id', email2);
           res.redirect(302,"/urls/");
@@ -206,6 +211,7 @@ app.post("/register", (req, res) => {
 let userID = generateRandomString();
 let email = req.body.email;
 let password = req.body.password;
+password = bcrypt.hashSync(password, 10);
 // res.cookie('username', userID);
 
 if (!email || !password){
