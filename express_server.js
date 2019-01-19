@@ -7,13 +7,11 @@ var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser');
 var ranNum;
-//var usr = "noname";
+var usr ;
 
 //The body-parser library will allow us to access POST request parameters, such as req.body.longURL, which we will store in a variable called urlDatabase.
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-
-
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
@@ -37,7 +35,6 @@ const users = {
   }
 };
 
-
 // function to generate a random number
 var generateRandomString = function() {
     return Math.random().toString(36).split('').filter( function(value, index, self) {
@@ -48,36 +45,43 @@ var generateRandomString = function() {
 
 // our main page
 app.get("/urls", (req, res) => {
-  usr = res.cookie.user_id;
+
   let templateVars = { urls: urlDatabase, user:users[usr], user_id: req.cookies[ "user_id"] };
   res.render("urls_index", templateVars);
+
 });
 
 app.get("/urls/new", (req, res) => {
-  usr = res.cookie.user_id;
-  if(usr === undefined){
-    res.redirect(302,"/login");
-  }
   let templateVars = { urls: urlDatabase , user:users[usr], user_id: req.cookies["user_id"] };
-  res.render("urls_new", templateVars);
+  usr =req.cookies.user_id;
+  console.log(usr);
+  if(usr !== undefined){
+    res.render("urls_new", templateVars);
+
+  }else{
+     res.redirect(302,"/login");
+  }
+
 });
 
 //The order of route definitions matters! (added this before app.get("/urls/:id", ...) route definition.)
 
 app.get("/urls/:id", (req, res) => {
-  usr = res.cookie.user_id;
   let templateVars = { shortURL: req.params.id ,user:users[usr], urls: urlDatabase ,user_id: req.cookies[ "user_id"]};
-  res.render("urls_show", templateVars);
+  if(user_id !== undefined){
+    res.render("urls_show", templateVars);
+
+  }else{
+     res.redirect(302,"/login");
+  }
 });
 
 app.get("/login", (req, res) => {
-  usr = res.cookie.user_id;
-  let templateVars = { shortURL: req.params.id ,user:users[usr], urls: urlDatabase ,user_id:req.cookies[ "user_id"]};
+  let templateVars = { shortURL: req.params.id ,user:users[usr], urls: urlDatabase , user_id:req.cookies[ "user_id"]};
   res.render("login", templateVars);
 });
 
 app.get("/register", (req, res) => {
-  usr = res.cookie.user_id;
   let templateVars = { urls: urlDatabase , user:users[usr], user_id: req.cookies[ "user_id"],  };
   res.render("register", templateVars);
 });
@@ -89,6 +93,8 @@ app.post("/urls", (req, res) => {
   //this result is the work of the bodyParser.urlEncoded() middleware
   ranNum = generateRandomString();
   urlDatabase[ranNum] = req.body.longURL;
+  urlDatabase[userID] = res.cookie.user_id;
+
   //console.log(urlDatabase);
   //res.send(302); //Temporary moved
   res.redirect(302,"/u/" + ranNum);
@@ -96,17 +102,24 @@ app.post("/urls", (req, res) => {
 
 //deleting one url
 app.post("/urls/:id/delete", (req, res) => {
-  var delurl = req.params.id;
-  delete urlDatabase[delurl];
-  console.log(urlDatabase);
-  res.redirect(302,"/urls");
+
+  if(user_id !== undefined){
+    var delurl = req.params.id;
+    delete urlDatabase[delurl];
+  //console.log(urlDatabase);
+    res.redirect(302,"/urls");
+
+  }else{
+     res.redirect(302,"/login");
+  }
 });
+
 
  //editing one url and add new long urlS
 app.post("/urls/:id", (req, res) => {
 var ed = req.params.id
 urlDatabase[ed] =  req.body.updatedlongURL;
-console.log(urlDatabase);
+//console.log(urlDatabase);
 res.redirect(302,"/urls/"+ed);
 
 
@@ -120,7 +133,6 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-
 //User login function
 
 app.post("/login", (req, res) => {
@@ -130,23 +142,17 @@ var password2 = req.body.password;
 if (!email2 || !password2){
   res.redirect(400,"/urls/");
 } else {
-    for (RandomID in users){
-      if (users[RandomID].email === email2){
+  //console.log(RandomID, users)
+   for (let RandomID in users){
+      if (users[RandomID].email === email2 && users[RandomID].password === password2) {
         //console.log("You already have an account");
-        if(users[RandomID].password !== password2){
-          res.status(403).send('login or password incorrect');
-          break;
-        }else{
           res.cookie('user_id', email2);
           res.redirect(302,"/urls/");
-        }
-
-        // res.send(400,'You already have an account');
-        // res.redirect(400,"/urls/");
-      }else{
-         res.status(403).send('login or password incorrect');
+          return;
       }
     }
+    //console.log("You already have an ??");
+    res.status(403).send('login or password incorrect');
 
   }
 });
@@ -159,8 +165,6 @@ res.clearCookie('user_id');
 res.redirect(302,"/urls/");
 
 });
-
-
 
 
 //Registration Handler
@@ -194,7 +198,7 @@ if (!email || !password){
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`tinyapp listening on port ${PORT}!`);
 });
 
 
