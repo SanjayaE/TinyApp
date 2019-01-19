@@ -9,21 +9,24 @@
 <body>
     <!-- Add your EJS code here -->
     <h2>URLs</h2>
-     <ul>
-      <!-- looping through objects. there is no Object.forEach() method.
-
-To achieve something similar, we can use the Object.keys() method, which returns an array of the keys in an object. Then we run that through an Array.forEach() method. -->
-
-
-       <% Object.keys(urls).forEach(function(item) { %>
-        <li><a href="<%= urls[item] %>"><%= urls[item] %></a> ==> <%= href= item %> <a href= <%= "urls/"+ item%>>Edit</a></li>
-
-        <form method="POST" action= <%=  "/urls/" + item + "/delete"%>>
-          <input type="submit" name="" value="Delete"/>
-        </form>
-
-    <% }); %>
-     </ul>
-
+      <table style="margin:50px;">
+      <% for (var url in urls) { %>
+          <tr style="height:30px;">
+            <form action="/urls/<%=url%>" method="POST">
+              <td><%=url%></td>
+              <td>&rarr;</td>
+              <td style="width:250px;">
+                <a href="<%=urls[url].url%>"><%=urls[url].url%></a>
+              </td>
+              <td style="width:50px;">
+                <a href="/urls/<%=url%>">Edit</a>
+              </td>
+              <td>
+                <button>Delete<img src="https://image.flaticon.com/icons/svg/65/65307.svg" width="20" height="20"></button>
+              </td>
+            </form>
+          </tr>
+      <% } %>
+    </table>
 </body>
 </html>

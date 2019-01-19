@@ -17,9 +17,16 @@ app.set("view engine", "ejs");
 
 //URL Database
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    url: "http://www.lighthouselabs.ca",
+    userID: "userRandomID"
+  },
+  "9sm5xK": {
+    url: "http://www.google.com",
+    userID: "user2RandomID"
+  }
 };
+
 
 // User Database
 const users = {
@@ -43,19 +50,27 @@ var generateRandomString = function() {
   //The javascript function ".toString()" does accept a parameter range from 2 to 36. Numbers from 2 to 10 represent: 0-9 values and 11 to 36 represent alphabets.
 };
 
+/* **********Get request responses*********** */
+
+
 // our main page
 app.get("/urls", (req, res) => {
-
-  let templateVars = { urls: urlDatabase, user:users[usr], user_id: req.cookies[ "user_id"] };
+  usr = req.cookies.user_id;
+  if(usr !== undefined){
+  let templateVars = { urls: urlDatabase, user:usr, user_id: req.cookies[ "user_id"] };
   res.render("urls_index", templateVars);
+
+  }else{
+     res.redirect(302,"/login");
+  }
 
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = { urls: urlDatabase , user:users[usr], user_id: req.cookies["user_id"] };
-  usr =req.cookies.user_id;
-  console.log(usr);
+  let user_id = req.cookies.user_id;
+  let urls = urlsForUser(user_id);
   if(usr !== undefined){
+    let templateVars = { urls: urls , user:usr, user_id: req.cookies["user_id"] };
     res.render("urls_new", templateVars);
 
   }else{
@@ -67,8 +82,9 @@ app.get("/urls/new", (req, res) => {
 //The order of route definitions matters! (added this before app.get("/urls/:id", ...) route definition.)
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id ,user:users[usr], urls: urlDatabase ,user_id: req.cookies[ "user_id"]};
-  if(user_id !== undefined){
+  let user_id = req.cookies.user_id;
+  let templateVars = { shortURL: req.params.id , user:usr, urls: urlDatabase ,user_id: req.cookies[ "user_id"]};
+  if(user_id){
     res.render("urls_show", templateVars);
 
   }else{
@@ -77,52 +93,13 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  let templateVars = { shortURL: req.params.id ,user:users[usr], urls: urlDatabase , user_id:req.cookies[ "user_id"]};
+  let templateVars = { shortURL: req.params.id ,user:usr, urls: urlDatabase , user_id:req.cookies[ "user_id"]};
   res.render("login", templateVars);
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = { urls: urlDatabase , user:users[usr], user_id: req.cookies[ "user_id"],  };
+  let templateVars = { urls: urlDatabase , user:usr, user_id: req.cookies[ "user_id"],  };
   res.render("register", templateVars);
-});
-
-//We need to define the route that will match this POST request and handle it.
-app.post("/urls", (req, res) => {
-  //console.log(req.body.longURL);  // debug statement to see POST parameters
-  //res.send("Ok");         // Respond with 'Ok' (we will replace this)
-  //this result is the work of the bodyParser.urlEncoded() middleware
-  ranNum = generateRandomString();
-  urlDatabase[ranNum] = req.body.longURL;
-  urlDatabase[userID] = res.cookie.user_id;
-
-  //console.log(urlDatabase);
-  //res.send(302); //Temporary moved
-  res.redirect(302,"/u/" + ranNum);
-});
-
-//deleting one url
-app.post("/urls/:id/delete", (req, res) => {
-
-  if(user_id !== undefined){
-    var delurl = req.params.id;
-    delete urlDatabase[delurl];
-  //console.log(urlDatabase);
-    res.redirect(302,"/urls");
-
-  }else{
-     res.redirect(302,"/login");
-  }
-});
-
-
- //editing one url and add new long urlS
-app.post("/urls/:id", (req, res) => {
-var ed = req.params.id
-urlDatabase[ed] =  req.body.updatedlongURL;
-//console.log(urlDatabase);
-res.redirect(302,"/urls/"+ed);
-
-
 });
 
 //assigning long URL to the key (short url)
@@ -131,6 +108,63 @@ app.get("/u/:shortURL", (req, res) => {
   let short =  req.params.shortURL ;
   let longURL =  urlDatabase[short] ;
   res.redirect(longURL);
+});
+
+
+/* **********Post request responses*********** */
+
+
+
+//We need to define the route that will match this POST request and handle it.
+app.post("/urls", (req, res) => {
+  //console.log(req.body.longURL);  // debug statement to see POST parameters
+  //res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  //this result is the work of the bodyParser.urlEncoded() middleware
+
+   let user_id = req.cookies.user_id;
+   let urls = urlsForUser(user_id);
+   let longURL = req.body.longURL;
+   let ranNum = generateRandomString();
+   if(user_id){
+    urlDatabase[ranNum] = { url : longURL , userID :user_id };
+    res.redirect(302,"/urls/" + ranNum);
+   } else{
+     res.redirect(302,"/login");
+   }
+
+});
+
+//deleting one url
+app.post("/urls/:id/delete", (req, res) => {
+  usr = req.cookies.user_id;
+  if(usr !== undefined){
+    var delurl = req.params.id;
+    delete urlDatabase[delurl];
+  let templateVars = { urls: urlDatabase, user:usr, user_id: req.cookies[ "user_id"] };
+  res.render("urls_index", templateVars);
+
+  }else{
+     res.redirect(302,"/login");
+  }
+});
+
+ //editing one url and add new long urlS
+app.post("/urls/:id", (req, res) => {
+ let ed = req.params.id
+ let userId = req.cookies.user_id;
+ if(urlDatabase[ed].userID === userId){
+
+    res.render("urls_show", templateVars);
+
+  }else{
+     res.redirect(302,"/login");
+  }
+
+urlDatabase[ed].url =  req.body.updatedlongURL;
+//console.log(urlDatabase);
+res.redirect(302,"/urls/"+ed);
+
+
 });
 
 //User login function
@@ -202,3 +236,16 @@ app.listen(PORT, () => {
 });
 
 
+//ALL is fine
+
+//ubset of the URL database that belongs to the user with ID
+
+function urlsForUser(user_id) {
+  let userWithId = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === user_id) {
+      userWithId[url] = urlDatabase[url];
+    }
+  }
+  return userWithId;
+}
