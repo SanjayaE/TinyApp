@@ -1,6 +1,8 @@
 // server.js
 // load the things we need
 
+/* **********Global variables*********** */
+
 var express = require("express");
 var app = express();
 var PORT = 8080; // default port 8080
@@ -9,7 +11,9 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 var ranNum;
-var usr ;
+var usr;
+
+/* **********Env Setup*********** */
 
 //The body-parser library will allow us to access POST request parameters, such as req.body.longURL, which we will store in a variable called urlDatabase.
 app.use(bodyParser.urlencoded({extended: true}));
@@ -55,6 +59,18 @@ var generateRandomString = function() {
     }).join('').substr(2,6);
   //The javascript function ".toString()" does accept a parameter range from 2 to 36. Numbers from 2 to 10 represent: 0-9 values and 11 to 36 represent alphabets.
 };
+
+/* function to return a subset of the URL database that belongs to the user with ID */
+
+function urlsForUser(user_id) {
+  let userWithId = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === user_id && urlDatabase[url].url) {
+      userWithId[url] = urlDatabase[url];
+    }
+  }
+  return userWithId;
+}
 
 /* **********Get request responses*********** */
 
@@ -241,7 +257,6 @@ if (!email || !password){
     }
   req.session.user_id = email;
   users[userID] = {id: userID, email: email, password: password}
-  console.log(users);
   res.redirect(302,"/urls/");
   return;
 }
@@ -255,16 +270,4 @@ app.listen(PORT, () => {
 });
 
 
-//ALL is fine
 
-//subset of the URL database that belongs to the user with ID
-
-function urlsForUser(user_id) {
-  let userWithId = {};
-  for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === user_id) {
-      userWithId[url] = urlDatabase[url];
-    }
-  }
-  return userWithId;
-}
