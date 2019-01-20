@@ -56,13 +56,17 @@ var generateRandomString = function() {
 
 // our main page
 app.get("/urls", (req, res) => {
-  usr = req.cookies.user_id;
-  if(usr !== undefined){
-  let templateVars = { urls: urlDatabase, user:usr, user_id: req.cookies[ "user_id"] };
-  res.render("urls_index", templateVars);
+  let user_id = req.cookies.user_id;
+   let urls = urlsForUser(user_id);
+  if(user_id){
+    let templateVars = { urls: urls, user_id:user_id};
+    res.render("urls_index", templateVars);
 
-  }else{
-     res.redirect(302,"/login");
+  }
+  else{
+      let user_id = "guest";
+     let templateVars = { urls: urlDatabase,user_id: user_id };
+     res.render("urls_index", templateVars);
   }
 
 });
@@ -70,8 +74,8 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   let user_id = req.cookies.user_id;
   let urls = urlsForUser(user_id);
-  if(usr !== undefined){
-    let templateVars = { urls: urls , user:usr, user_id: req.cookies["user_id"] };
+  if(user_id){
+    let templateVars = { urls: urls , user:usr , user_id:user_id};
     res.render("urls_new", templateVars);
 
   }else{
@@ -82,16 +86,7 @@ app.get("/urls/new", (req, res) => {
 
 //The order of route definitions matters! (added this before app.get("/urls/:id", ...) route definition.)
 
-app.get("/urls/:id", (req, res) => {
-  let user_id = req.cookies.user_id;
-  let templateVars = { shortURL: req.params.id , user:usr, urls: urlDatabase ,user_id: req.cookies[ "user_id"]};
-  if(user_id){
-    res.render("urls_show", templateVars);
 
-  }else{
-     res.redirect(302,"/login");
-  }
-});
 
 app.get("/login", (req, res) => {
   let templateVars = { shortURL: req.params.id ,user:usr, urls: urlDatabase , user_id:req.cookies[ "user_id"]};
@@ -111,6 +106,16 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/urls/:id", (req, res) => {
+  let user_id = req.cookies.user_id;
+  let templateVars = { shortURL: req.params.id , user:usr, urls: urlDatabase ,user_id: req.cookies[ "user_id"]};
+  if(user_id){
+    res.render("urls_show", templateVars);
+
+  }else{
+     res.redirect(302,"/login");
+  }
+});
 
 /* **********Post request responses*********** */
 
@@ -128,6 +133,7 @@ app.post("/urls", (req, res) => {
    let ranNum = generateRandomString();
    if(user_id){
     urlDatabase[ranNum] = { url : longURL , userID :user_id };
+    // let templateVars = { urls: urls, user:usr};
     res.redirect(302,"/urls/" + ranNum);
    } else{
      res.redirect(302,"/login");
@@ -137,13 +143,13 @@ app.post("/urls", (req, res) => {
 
 //deleting one url
 app.post("/urls/:id/delete", (req, res) => {
-  usr = req.cookies.user_id;
-  if(usr !== undefined){
-    var delurl = req.params.id;
+  let user_id = req.cookies.user_id;
+ let urls = urlsForUser(user_id);
+ if(urlDatabase[ed].userID === user_id){
+   var delurl = req.params.id;
     delete urlDatabase[delurl];
-  let templateVars = { urls: urlDatabase, user:usr, user_id: req.cookies[ "user_id"] };
+    let templateVars = { urls: urls , user: usr , shortURL :ed, user_id: user_id};
   res.render("urls_index", templateVars);
-
   }else{
      res.redirect(302,"/login");
   }
@@ -151,10 +157,11 @@ app.post("/urls/:id/delete", (req, res) => {
 
  //editing one url and add new long urlS
 app.post("/urls/:id", (req, res) => {
- let ed = req.params.id
- let userId = req.cookies.user_id;
- if(urlDatabase[ed].userID === userId){
-
+ let ed = req.params.id;
+ let user_id = req.cookies.user_id;
+ let urls = urlsForUser(user_id);
+ if(urlDatabase[ed].userID === user_id){
+    let templateVars = { urls: urls , user: usr , shortURL :ed, user_id: user_id};
     res.render("urls_show", templateVars);
 
   }else{
@@ -244,7 +251,7 @@ app.listen(PORT, () => {
 
 //ALL is fine
 
-//ubset of the URL database that belongs to the user with ID
+//subset of the URL database that belongs to the user with ID
 
 function urlsForUser(user_id) {
   let userWithId = {};

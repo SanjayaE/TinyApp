@@ -9,10 +9,7 @@
 <body>
     <!-- Add your EJS code here -->
     <% if(user){ %>
-   <h3> Hello <%= user %> </h3>
-   <form method="POST" action= "/logout" >
-          <input type="submit" name="" value="Logout"/>
-        </form>
+
 
 <% } else { %>
  <form action="/login" method="POST" style="margin:150px;">

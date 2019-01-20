@@ -19,10 +19,13 @@
                 <a href="<%=urls[url].url%>"><%=urls[url].url%></a>
               </td>
               <td style="width:50px;">
+                <% if(user_id !== "guest"){ %>
                 <a href="/urls/<%=url%>">Edit</a>
               </td>
               <td>
                 <button>Delete<img src="https://image.flaticon.com/icons/svg/65/65307.svg" width="20" height="20"></button>
+
+                <% } %>
               </td>
             </form>
           </tr>
