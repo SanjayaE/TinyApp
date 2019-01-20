@@ -70,7 +70,7 @@ app.get("/urls", (req, res) => {
 
   }
   else{
-    let user_id = "guest";
+    let user_id = null;
     let templateVars = { urls: urlDatabase,user_id: user_id };
     res.render("urls_index", templateVars);
   }

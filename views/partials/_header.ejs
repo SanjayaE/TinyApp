@@ -11,12 +11,14 @@
          </a>
             <ul class="nav navbar-nav">
             <a href="/urls">URLS </a>
+            <a >   / </a>
+            <a href="/urls/new"> Add New URL</a>
              <a >   / </a>
+             <% if(user_id === null){ %>
             <a href="/login"> Login</a>
             <a >   / </a>
             <a href="/register"> Register</a>
-            <a >   / </a>
-            <a href="/urls/new"> Add New URL</a>
+             <% } %>
         </ul>
     </div>
     <h1>Dushantha's TinyApp</h1>

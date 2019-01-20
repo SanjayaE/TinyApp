@@ -6,7 +6,7 @@
 <header>
     <% include ../views/partials/_header %>
 </header>
-<body>
+   <body style="font-size:20px; padding:50px;">
     <!-- Add your EJS code here -->
     <h2>URLs</h2>
       <table style="margin:50px;">
@@ -19,7 +19,7 @@
                 <a href="<%=urls[url].url%>"><%=urls[url].url%></a>
               </td>
               <td style="width:50px;">
-                <% if(user_id !== "guest"){ %>
+                <% if(user_id !== null){ %>
                 <a href="/urls/<%=url%>">Edit</a>
               </td>
               <td>
