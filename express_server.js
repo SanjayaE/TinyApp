@@ -5,16 +5,21 @@ var express = require("express");
 var app = express();
 var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser');
+// var cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 var ranNum;
 var usr ;
 
 //The body-parser library will allow us to access POST request parameters, such as req.body.longURL, which we will store in a variable called urlDatabase.
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+//app.use(cookieParser());
 // set the view engine to ejs
 app.set("view engine", "ejs");
+app.use(cookieSession({
+  name: "session",
+  keys: ["key-1"]
+}));
 
 //URL Database
 const urlDatabase = {
@@ -56,7 +61,7 @@ var generateRandomString = function() {
 
 // our main page
 app.get("/urls", (req, res) => {
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
    let urls = urlsForUser(user_id);
   if(user_id){
     let templateVars = { urls: urls, user_id:user_id};
@@ -72,7 +77,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
   let urls = urlsForUser(user_id);
   if(user_id){
     let templateVars = { urls: urls , user:usr , user_id:user_id};
@@ -89,12 +94,12 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/login", (req, res) => {
-  let templateVars = { shortURL: req.params.id ,user:usr, urls: urlDatabase , user_id:req.cookies[ "user_id"]};
+  let templateVars = { shortURL: req.params.id ,user:usr, urls: urlDatabase , user_id:req.session[ "user_id"]};
   res.render("login", templateVars);
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = { urls: urlDatabase , user:usr, user_id: req.cookies[ "user_id"],  };
+  let templateVars = { urls: urlDatabase , user:usr, user_id: req.session[ "user_id"],  };
   res.render("register", templateVars);
 });
 
@@ -107,8 +112,8 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let user_id = req.cookies.user_id;
-  let templateVars = { shortURL: req.params.id , user:usr, urls: urlDatabase ,user_id: req.cookies[ "user_id"]};
+  let user_id = req.session.user_id;
+  let templateVars = { shortURL: req.params.id , user:usr, urls: urlDatabase ,user_id: req.session[ "user_id"]};
   if(user_id){
     res.render("urls_show", templateVars);
 
@@ -127,7 +132,7 @@ app.post("/urls", (req, res) => {
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
   //this result is the work of the bodyParser.urlEncoded() middleware
 
-   let user_id = req.cookies.user_id;
+   let user_id = req.session.user_id;
    let urls = urlsForUser(user_id);
    let longURL = req.body.longURL;
    let ranNum = generateRandomString();
@@ -143,7 +148,7 @@ app.post("/urls", (req, res) => {
 
 //deleting one url
 app.post("/urls/:id/delete", (req, res) => {
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
  let urls = urlsForUser(user_id);
  if(urlDatabase[ed].userID === user_id){
    var delurl = req.params.id;
@@ -158,7 +163,7 @@ app.post("/urls/:id/delete", (req, res) => {
  //editing one url and add new long urlS
 app.post("/urls/:id", (req, res) => {
  let ed = req.params.id;
- let user_id = req.cookies.user_id;
+ let user_id = req.session.user_id;
  let urls = urlsForUser(user_id);
  if(urlDatabase[ed].userID === user_id){
     let templateVars = { urls: urls , user: usr , shortURL :ed, user_id: user_id};
@@ -192,7 +197,7 @@ if (!email2 || !password2){
     let true1 = bcrypt.compareSync(password2,users[RandomID].password);
       if (users[RandomID].email === email2 && true1) {
         //console.log("You already have an account");
-          res.cookie('user_id', email2);
+          req.session.user_id = email2;
           res.redirect(302,"/urls/");
           return;
       }
@@ -207,7 +212,7 @@ if (!email2 || !password2){
 // logout endpoint
 
 app.post("/logout", (req, res) => {
-res.clearCookie('user_id');
+req.session.user_id = null;
 res.redirect(302,"/urls/");
 
 });
@@ -233,7 +238,7 @@ if (!email || !password){
         break;
       }
     }
-  res.cookie('user_id', email);
+  req.session.user_id = email;
   users[userID] = {id: userID, email: email, password: password}
   console.log(users);
   res.redirect(302,"/urls/");
