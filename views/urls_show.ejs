@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>TinyApp</title>
-</head>
-<header>
-    <% include ../views/partials/_header %>
-</header>
-<body style="font-size:20px; padding:50px;">
+  <head>
+    <title>TinyApp</title>
+    </head>
+      <header>
+        <% include ../views/partials/_header %>
+      </header>
+            <body style="font-size:20px; padding:50px;">
     <!-- Add your EJS code here -->
-    <h3>Short URL : <%= shortURL%></h3>
-    <form action= <%= "/urls/"+shortURL%> method="POST" style="margin:150px;">
-      <label for="updatedlongURL">Enter a URL:</label>
-      <input id="updatedlongURL" type="text" name="updatedlongURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
-    </form>
+               <h3>Short URL : <%= shortURL%></h3>
+                <form action= <%= "/urls/"+shortURL%> method="POST" style="margin:150px;">
+                 <label for="updatedlongURL">Enter a URL:</label>
+                  <input id="updatedlongURL" type="text" name="updatedlongURL" placeholder="http://" style="width: 300px">
+                 <input type="submit" value="Submit">
+                </form>
 
 
-</body>
+          </body>
 </html>

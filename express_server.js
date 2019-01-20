@@ -61,17 +61,18 @@ var generateRandomString = function() {
 
 // our main page
 app.get("/urls", (req, res) => {
+
   let user_id = req.session.user_id;
-   let urls = urlsForUser(user_id);
+  let urls = urlsForUser(user_id);
   if(user_id){
     let templateVars = { urls: urls, user_id:user_id};
     res.render("urls_index", templateVars);
 
   }
   else{
-      let user_id = "guest";
-     let templateVars = { urls: urlDatabase,user_id: user_id };
-     res.render("urls_index", templateVars);
+    let user_id = "guest";
+    let templateVars = { urls: urlDatabase,user_id: user_id };
+    res.render("urls_index", templateVars);
   }
 
 });
@@ -149,12 +150,12 @@ app.post("/urls", (req, res) => {
 //deleting one url
 app.post("/urls/:id/delete", (req, res) => {
   let user_id = req.session.user_id;
- let urls = urlsForUser(user_id);
+  let urls = urlsForUser(user_id);
  if(urlDatabase[ed].userID === user_id){
    var delurl = req.params.id;
     delete urlDatabase[delurl];
     let templateVars = { urls: urls , user: usr , shortURL :ed, user_id: user_id};
-  res.render("urls_index", templateVars);
+    res.render("urls_index", templateVars);
   }else{
      res.redirect(302,"/login");
   }
