@@ -14,7 +14,7 @@
             <a >   / </a>
             <a href="/urls/new"> Add New URL</a>
              <a >   / </a>
-             <% if(user_id === null){ %>
+             <% if(newUserId === null){ %>
             <a href="/login"> Login</a>
             <a >   / </a>
             <a href="/register"> Register</a>
@@ -22,8 +22,8 @@
         </ul>
     </div>
     <h1>Dushantha's TinyApp</h1>
-  <% if(user_id){ %>
-   <h4> Hello <%= user_id %> </h4>
+  <% if(newUserId){ %>
+   <h4> Hello <%= newUserId %> </h4>
    <form method="POST" action= "/logout" >
           <input type="submit" name="" value="Logout"/>
         </form>
