@@ -233,7 +233,8 @@ app.post('/login', (req, res) => {
 // logout endpoint
 
 app.post('/logout', (req, res) => {
-  req.session.newUserId = null;
+  // req.session.newUserId = null;
+  req.session = null;
   res.redirect(302, '/urls/');
 });
 
