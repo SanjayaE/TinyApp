@@ -14,10 +14,12 @@
         <% if(urls[url].url){ %>
           <tr style="height:30px;">
             <form action="/urls/<%=url%>" method="POST">
-              <td><%=url%></td>
+              <td>
+               <a href="/u/<%=url%>"><%=url%></a>
+                </td>
               <td>&rarr;</td>
               <td style="width:250px;">
-                <a href="<%=urls[url].url%>"><%=urls[url].url%></a>
+               <%=urls[url].url%>
               </td>
               <td style="width:50px;">
                 <% } %>

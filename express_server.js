@@ -122,13 +122,13 @@ app.get('/register', (req, res) => {
 
 // assigning long URL to the key (short url)
 
-app.get('/urls/:shortURL', (req, res) => {
+app.get('/u/:shortURL', (req, res) => {
   const short = req.params.shortURL;
   if(!urlDatabase[short]) {
     res.sendStatus(404); /*if short url is not on the DB, this will prevent Cannot read property 'url' of undefined error. */
   }else{
     const longURL = urlDatabase[short].url;
-    console.log(urlDatabase[short].url);
+    //console.log(urlDatabase[short].url);
     res.redirect(longURL);
   }
 });
