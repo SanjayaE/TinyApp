@@ -21,8 +21,6 @@ let usr;
 such as req.body.longURL, which we will store in a variable called urlDatabase. */
 
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cookieParser());
-// set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(cookieSession({
   name: 'session',
@@ -128,7 +126,6 @@ app.get('/u/:shortURL', (req, res) => {
     res.sendStatus(404); /*if short url is not on the DB, this will prevent Cannot read property 'url' of undefined error. */
   }else{
     const longURL = urlDatabase[short].url;
-    //console.log(urlDatabase[short].url);
     res.redirect(longURL);
   }
 });
@@ -150,17 +147,12 @@ app.get('/urls/:id', (req, res) => {
 
 // We need to define the route that will match this POST request and handle it.
 app.post('/urls', (req, res) => {
-  // console.log(req.body.longURL);  // debug statement to see POST parameters
-  // res.send("Ok");         // Respond with 'Ok' (we will replace this)
-  // this result is the work of the bodyParser.urlEncoded() middleware
-
   const newUserId = req.session.newUserId;
   const urls = urlsForUser(newUserId);
   const longURL = req.body.longURL;
   const ranNum = generateRandomString();
   if (newUserId) {
     urlDatabase[ranNum] = { url: longURL, userID: newUserId };
-    // let templateVars = { urls: urls, user:usr};
     res.redirect(302, `/urls/${ranNum}`);
   } else {
     res.redirect(302, '/login');
@@ -198,7 +190,6 @@ app.post('/urls/:id', (req, res) => {
   }
 
   urlDatabase[ed].url = req.body.updatedlongURL;
-  // console.log(urlDatabase);
   res.redirect(302, `/urls/${ed}`);
 });
 
@@ -207,24 +198,17 @@ app.post('/urls/:id', (req, res) => {
 app.post('/login', (req, res) => {
   const email2 = req.body.email;
   const password2 = req.body.password;
-  // bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword);
-
-
   if (!email2 || !password2) {
     res.redirect(400, '/urls/');
   } else {
-  // console.log(RandomID, users)
     for (const RandomID in users) {
-    // bcrypt.compareSync(password, users[user].password))
       const true1 = bcrypt.compareSync(password2, users[RandomID].password);
       if (users[RandomID].email === email2 && true1) {
-        // console.log("You already have an account");
         req.session.newUserId = email2;
         res.redirect(302, '/urls/');
         return;
       }
     }
-    // console.log("You already have an ??");
     res.status(403).send('login or password incorrect');
   }
 });
@@ -233,7 +217,6 @@ app.post('/login', (req, res) => {
 // logout endpoint
 
 app.post('/logout', (req, res) => {
-  // req.session.newUserId = null;
   req.session = null;
   res.redirect(302, '/urls/');
 });
@@ -245,17 +228,13 @@ app.post('/register', (req, res) => {
   const email = req.body.email;
   let password = req.body.password;
   password = bcrypt.hashSync(password, 10);
-  // res.cookie('username', userID);
 
   if (!email || !password) {
     res.redirect(400, '/urls/');
   } else {
     for (let RandomID in users) {
       if (users[RandomID].email === email) {
-        // console.log("You already have an account");
         res.status(400).send('You already have an account');
-        // res.send(400,'You already have an account');
-        // res.redirect(400,"/urls/");
         break;
       }
     }
