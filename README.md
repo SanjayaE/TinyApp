@@ -12,9 +12,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 - Screenshot of adding new URL.
 !["Screenshot of adding new URL."](https://github.com/SanjayaE/TinyApp/blob/master/docs/adding%20new%20url.png?raw=true)
 - Screenshot of page after adding URLs, Note only users can edit and delete their own urls.
-!["Screenshot of page after adding URLs, Note only users can edit and delete their own urls."](https://github.com/SanjayaE/TinyApp/blob/master/docs/after%20adding%20urls.png?raw=true)
+!["Screenshot of page after adding URLs, Note only users can edit and delete their own urls."](https://github.com/SanjayaE/TinyApp/blob/master/docs/user%20page%20update.png?raw=true)
 - Screenshot of page after log out. Users can still see the tinyURLs.
-!["Screenshot of page after log out. Users can still see the tinyURLs."](https://github.com/SanjayaE/TinyApp/blob/master/docs/after%20log%20out.png?raw=true)
+!["Screenshot of page after log out. Users can still see the tinyURLs."](https://github.com/SanjayaE/TinyApp/blob/master/docs/update%20url%20page.png?raw=true)
 
 
 ## Dependencies
