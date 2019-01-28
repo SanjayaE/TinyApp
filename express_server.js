@@ -1,5 +1,4 @@
-// server.js
-// load the things we need
+
 
 /* **********Global variables*********** */
 
@@ -167,7 +166,7 @@ app.post('/urls/:id/delete', (req, res) => {
     const delurl = req.params.id;
     delete urlDatabase[delurl];
     const templateVars = {
-      urls, user: usr, shortURL: ed, newUserId,
+      urls, user: usr, shortURL: shortUrlId, newUserId,
     };
     res.render('urls_index', templateVars);
   } else {
@@ -177,34 +176,34 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // editing one url and add new long urlS
 app.post('/urls/:id', (req, res) => {
-  const ed = req.params.id;
+  const shortUrlId = req.params.id;
   const newUserId = req.session.newUserId;
   const urls = urlsForUser(newUserId);
-  if (urlDatabase[ed].userID === newUserId) {
+  if (urlDatabase[shortUrlId].userID === newUserId) {
     const templateVars = {
-      urls, user: usr, shortURL: ed, newUserId,
+      urls, user: usr, shortURL: shortUrlId, newUserId,
     };
     res.render('urls_show', templateVars);
   } else {
     res.redirect(302, '/login');
   }
 
-  urlDatabase[ed].url = req.body.updatedlongURL;
-  res.redirect(302, `/urls/${ed}`);
+  urlDatabase[shortUrlId].url = req.body.updatedlongURL;
+  res.redirect(302, `/urls/${shortUrlId}`);
 });
 
 // User login function
 
 app.post('/login', (req, res) => {
-  const email2 = req.body.email;
-  const password2 = req.body.password;
-  if (!email2 || !password2) {
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
     res.redirect(400, '/urls/');
   } else {
     for (const RandomID in users) {
-      const true1 = bcrypt.compareSync(password2, users[RandomID].password);
-      if (users[RandomID].email === email2 && true1) {
-        req.session.newUserId = email2;
+      const hashed = bcrypt.compareSync(password, users[RandomID].password);
+      if (users[RandomID].email === email && hashed) {
+        req.session.newUserId = email;
         res.redirect(302, '/urls/');
         return;
       }
@@ -227,7 +226,7 @@ app.post('/register', (req, res) => {
   const userID = generateRandomString();
   const email = req.body.email;
   let password = req.body.password;
-  password = bcrypt.hashSync(password, 10);
+  //password = bcrypt.hashSync(password, 10);
 
   if (!email || !password) {
     res.redirect(400, '/urls/');
@@ -239,7 +238,8 @@ app.post('/register', (req, res) => {
       }
     }
     req.session.newUserId = email;
-    users[userID] = { id: userID, email, password };
+    users[userID] = { id: userID, email: email, password :bcrypt.hashSync(password, 10) };
+    console.log(users[userID])
     res.redirect(302, '/urls/');
   }
 });
