@@ -163,8 +163,8 @@ app.post('/urls/:id/delete', (req, res) => {
   const newUserId = req.session.newUserId;
   const urls = urlsForUser(newUserId);
   if (urlDatabase[newUserId].userID === newUserId) {
-    const delurl = req.params.id;
-    delete urlDatabase[delurl];
+    const urlDelete = req.params.id;
+    delete urlDatabase[urlDelete];
     const templateVars = {
       urls, user: usr, shortURL: shortUrlId, newUserId,
     };
