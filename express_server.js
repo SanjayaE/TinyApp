@@ -201,8 +201,8 @@ app.post('/login', (req, res) => {
     res.redirect(400, '/urls/');
   } else {
     for (const RandomID in users) {
-      const hashed = bcrypt.compareSync(password, users[RandomID].password);
-      if (users[RandomID].email === email && hashed) {
+      const isValidPassword = bcrypt.compareSync(password, users[RandomID].password);
+      if (users[RandomID].email === email && isValidPassword) {
         req.session.newUserId = email;
         res.redirect(302, '/urls/');
         return;
