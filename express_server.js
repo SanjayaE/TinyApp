@@ -1,5 +1,4 @@
 
-
 /* **********Global variables*********** */
 
 const express = require('express');
@@ -86,8 +85,12 @@ app.get('/urls', (req, res) => {
     res.render('urls_index', templateVars);
   } else {
     const newUserId = null;
-    const templateVars = { urls: urlDatabase, newUserId };
+    const err = "You are not allowed here, please login or register!";
+    const templateVars = { newUserId, err };
     res.render('urls_index', templateVars);
+
+
+  // res.status(403).send('You are not allowed here, please login or register');
   }
 });
 

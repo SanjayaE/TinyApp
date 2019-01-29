@@ -8,29 +8,31 @@
 </header>
    <body style="font-size:20px; padding:50px;">
     <!-- Add your EJS code here -->
-    <h3>URLs</h3>
       <table style="margin:50px;">
-      <% for (var url in urls) { %>
-        <% if(urls[url].url){ %>
-          <tr style="height:30px;">
-            <form action="/urls/<%=url%>" method="POST">
-              <td>
-               <a href="/u/<%=url%>"><%=url%></a>
-                </td>
-              <td>&rarr;</td>
-              <td style="width:250px;">
-               <%=urls[url].url%>
-              </td>
-              <td style="width:50px;">
-                <% } %>
+        <% if(newUserId === null){ %>
+          <h3>Error: <%= err%></h3>
+              <% } %>
                 <% if(newUserId !== null){ %>
-                <a href="/urls/<%=url%>">Edit</a>
-              </td>
-              <td>
-                <button>Delete<img src="https://image.flaticon.com/icons/svg/65/65307.svg" width="20" height="20"></button>
-
-                <% } %>
-              </td>
+                <h3>URLs</h3>
+                <% for (var url in urls) { %>
+                  <% if(urls[url].url){ %>
+                    <tr style="height:30px;">
+                    <form action="/urls/<%=url%>" method="POST">
+                      <td>
+                      <a href="/u/<%=url%>"><%=url%></a>
+                      </td>
+                      <td>&rarr;</td>
+                      <td style="width:250px;">
+                        <%=urls[url].url%>
+                      </td>
+                      <td style="width:50px;">
+                        <% } %>
+                      <a href="/urls/<%=url%>">Edit</a>
+                      </td>
+                      <td>
+                      <button>Delete<img src="https://image.flaticon.com/icons/svg/65/65307.svg" width="20" height="20"></button>
+                      <% } %>
+                      </td>
             </form>
           </tr>
       <% } %>
