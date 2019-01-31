@@ -134,13 +134,21 @@ app.get('/u/:shortURL', (req, res) => {
 
 app.get('/urls/:id', (req, res) => {
   const newUserId = req.session.newUserId;
-  const templateVars = {
-    shortURL: req.params.id, user: usr, urls: urlDatabase, newUserId: req.session.newUserId,
+  const shortUrlId = req.params.id;
+  if (urlDatabase[shortUrlId].userID === newUserId) {
+    const urls = urlsForUser(newUserId);
+    const templateVars = {
+    shortURL: req.params.id, user: usr, longUrl: urls[req.params.id].url, urls: urls, newUserId: req.session.newUserId,
   };
-  if (newUserId) {
     res.render('urls_show', templateVars);
+  } else if (newUserId){
+    res.redirect(401, '/urls/');
+
   } else {
-    res.redirect(302, '/login');
+    const newUserId = null;
+    const err = "You are not allowed here, please login or register!";
+    const templateVars = { newUserId, err };
+    res.render('urls_show', templateVars);
   }
 });
 
@@ -184,7 +192,7 @@ app.post('/urls/:id', (req, res) => {
   const urls = urlsForUser(newUserId);
   if (urlDatabase[shortUrlId].userID === newUserId) {
     const templateVars = {
-      urls, user: usr, shortURL: shortUrlId, newUserId,
+      urls, user: usr, shortURL: shortUrlId, newUserId, longUrl: req.body.updatedlongURL
     };
     res.render('urls_show', templateVars);
   } else {
@@ -242,7 +250,6 @@ app.post('/register', (req, res) => {
     }
     req.session.newUserId = email;
     users[userID] = { id: userID, email: email, password :bcrypt.hashSync(password, 10) };
-    console.log(users[userID])
     res.redirect(302, '/urls/');
   }
 });

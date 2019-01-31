@@ -8,13 +8,18 @@
       </header>
             <body style="font-size:20px; padding:50px;">
     <!-- Add your EJS code here -->
-               <h3>Short URL : <%= shortURL%></h3>
-                <form action= <%= "/urls/"+shortURL%> method="POST" style="margin:150px;">
-                 <label for="updatedlongURL">Enter a URL:</label>
+          <% if(newUserId === null){ %>
+             <h3>Error: <%= err%></h3>
+              <% } %>
+                <% if(newUserId !== null){ %>
+                  <h3>Short URL : <a href='/u/<%= shortURL%>'><%= shortURL%></a></h3>
+                  <h3>Long URL : <%= longUrl %></h3>
+                  <form action= <%= "/urls/"+shortURL%> method="POST" style="margin:150px;">
+                <label for="updatedlongURL">Enter a URL:</label>
                   <input id="updatedlongURL" type="text" name="updatedlongURL" placeholder="http://" style="width: 300px">
                  <input type="submit" value="Submit">
                 </form>
-
+                  <% } %>
 
           </body>
 </html>
