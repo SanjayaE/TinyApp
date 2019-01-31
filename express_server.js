@@ -191,16 +191,15 @@ app.post('/urls/:id', (req, res) => {
   const newUserId = req.session.newUserId;
   const urls = urlsForUser(newUserId);
   if (urlDatabase[shortUrlId].userID === newUserId) {
-    const templateVars = {
-      urls, user: usr, shortURL: shortUrlId, newUserId, longUrl: req.body.updatedlongURL
-    };
-    res.render('urls_show', templateVars);
+    // const templateVars = {
+    //   urls, user: usr, shortURL: shortUrlId, newUserId, longUrl: req.body.updatedlongURL};
+    urlDatabase[shortUrlId].url = req.body.updatedlongURL;
+    res.redirect(302, `/urls`);
+    // res.render('urls_show', templateVars);
   } else {
     res.redirect(302, '/login');
   }
 
-  urlDatabase[shortUrlId].url = req.body.updatedlongURL;
-  res.redirect(302, `/urls/${shortUrlId}`);
 });
 
 // User login function
